@@ -2,6 +2,7 @@
 # Run with: docker compose -f ./ciad-infra/docker-compose.yaml up
 services:
   ciad-frontend:
+    container_name: ciad-frontend
     build:
       context: ../ciad-frontend
       dockerfile: ./dockerfile.dev
@@ -10,18 +11,20 @@ services:
     environment:
       - PORT=4321
       - HOST=0.0.0.0
+      - VITE_API_URL=http://localhost:1234
     ports:
       - '4321:4321'
     depends_on:
       - ciad-backend
   #######################################
   ciad-backend:
+    container_name: ciad-backend
     build:
       context: ../ciad-backend # Correct the path relative to ciad-infra
       dockerfile: ./dockerfile.dev
     volumes:
       - '../ciad-backend:/app'
-    environment:
-      - PORT=1234
+    env_file:
+      - ../ciad-backend/.env
     ports:
       - '1234:1234'
