@@ -1,0 +1,6 @@
+[submodule "ciad-frontend"]
+	path = ciad-frontend
+	url = https://github.com/Aurorabyte-Solutions/ciad-frontend
+[submodule "ciad-backend"]
+	path = ciad-backend
+	url = https://github.com/Aurorabyte-Solutions/ciad-backend
