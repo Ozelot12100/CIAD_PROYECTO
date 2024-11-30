@@ -1,2 +1,4 @@
-ciad-backend
-ciad-frontend
+ciad-backend/
+ciad-frontend/
+
+ciad-postgres/
