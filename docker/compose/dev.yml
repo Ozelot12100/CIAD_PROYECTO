@@ -1,8 +1,5 @@
-# Dev environment docker-compose file
-# Run with: docker compose -f ./ciad-infra/docker-compose.yaml up
 services:
   ciad-frontend:
-    container_name: ciad-frontend
     build:
       context: ./ciad-frontend
       dockerfile: ./dockerfile.dev
@@ -13,57 +10,52 @@ services:
       - HOST=0.0.0.0
       - API_URL=http://localhost:1234
     ports:
-      - '4321:4321'
+      - 4321:4321
     depends_on:
       - ciad-backend
   #######################################
   ciad-backend:
-    container_name: ciad-backend
     build:
       context: ./ciad-backend # Correct the path relative to ciad-infra
       dockerfile: ./dockerfile.dev
     volumes:
-      - './ciad-backend:/app'
-    # env_file:
-    #   - ./ciad-backend/.env
+      - ./ciad-backend:/app
     environment:
       DATABASE_URI: 'postgresql://postgres:postgres@ciad-postgres:5432/ciad'
       PORT: '1234'
-      ENVIROMENT: 'development'
+      ENVIRONMENT: 'development'
     ports:
       - '1234:1234'
     depends_on:
       - ciad-postgres
-
   #######################################
   ciad-postgres:
-    container_name: ciad-postgres
     image: postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: ciad
     ports:
-      - '5432:5432'
+      - 5432:5432
     volumes:
-      - './data/db:/var/lib/postgresql/data'
+      - ./data/db:/var/lib/postgresql/data
     restart: always
-
   ##########################################
   pgadmin:
-    container_name: pgadmin_container
     image: dpage/pgadmin4
+    user: '${UID}:${GID}'
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
       PGADMIN_CONFIG_SERVER_MODE: 'False'
       PGADMIN_MASTER_PASSWORD_REQUIRED: 'False'
     volumes:
-      - pgadmin:/var/lib/pgadmin
+      - ./data/pgadmin:/var/lib/pgadmin
     ports:
       - '${PGADMIN_PORT:-5050}:80'
     depends_on:
       - ciad-postgres
 
-volumes:
-  pgadmin:
+networks:
+  ciad-network:
+    driver: bridge
