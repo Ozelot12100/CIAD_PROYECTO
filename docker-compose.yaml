@@ -30,10 +30,16 @@ services:
       DATABASE_URI: 'postgresql://postgres:postgres@ciad-postgres:5432/ciad'
       PORT: '1234'
       ENVIROMENT: 'development'
+      MINIO_ENDPOINT: 'ciad-minio:9000'
+      MINIO_ACCESS_KEY: 'minioadmin'
+      MINIO_SECRET_KEY: 'minioadmin'
+      MINIO_USE_SSL: 'false'
+      MINIO_BUCKET_NAME: 'manifests'
     ports:
       - '1234:1234'
     depends_on:
       - ciad-postgres
+      - ciad-minio
 
   #######################################
   ciad-postgres:
@@ -64,6 +70,38 @@ services:
       - '${PGADMIN_PORT:-5050}:80'
     depends_on:
       - ciad-postgres
+      
+  ##########################################
+  ciad-minio:
+    container_name: ciad-minio
+    image: minio/minio
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - minio_data:/data
+    ports:
+      - '9002:9000'  # API port
+      - '9001:9001'  # Console port
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9001/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+      
+  ##########################################
+  ciad-minio-init:
+    container_name: ciad-minio-init
+    image: minio/mc
+    depends_on:
+      ciad-minio:
+        condition: service_healthy
+    volumes:
+      - ./init-minio.sh:/init-minio.sh
+    entrypoint: ["/bin/sh", "/init-minio.sh"]
+    restart: on-failure
 
 volumes:
   pgadmin:
+  minio_data:
