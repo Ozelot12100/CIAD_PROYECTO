@@ -3,7 +3,7 @@
 
 # Wait for MinIO to be ready
 echo "Waiting for MinIO to be ready..."
-until curl -s http://ciad-minio:9000/minio/health/live; do
+until curl -s http://ciad-minio:9001/minio/health/live; do
   echo "MinIO not ready yet, waiting..."
   sleep 5
 done
@@ -11,7 +11,7 @@ done
 echo "MinIO is ready, initializing..."
 
 # Create the manifests bucket if it doesn't exist
-mc alias set ciad-minio http://ciad-minio:9000 minioadmin minioadmin
+mc alias set ciad-minio http://ciad-minio:9002 minioadmin minioadmin
 mc mb --ignore-existing ciad-minio/manifests
 
 # Set bucket policy to allow read/write access
