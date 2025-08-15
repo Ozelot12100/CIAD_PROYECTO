@@ -13,6 +13,8 @@ services:
       - 4321:4321
     depends_on:
       - ciad-backend
+    networks:
+      - ciad-network
   #######################################
   ciad-backend:
     build:
@@ -20,21 +22,24 @@ services:
       dockerfile: ./dockerfile.dev
     volumes:
       - ./ciad-backend:/app
-    environment:
-      DATABASE_URI: 'postgresql://postgres:postgres@ciad-postgres:5432/ciad'
-      PORT: '1234'
-      ENVIROMENT: 'development'
-      MINIO_ENDPOINT: 'ciad-minio:9000'
-      MINIO_ACCESS_KEY: 'minioadmin'
-      MINIO_SECRET_KEY: 'minioadmin'
-      MINIO_USE_SSL: 'false'
-      MINIO_BUCKET_NAME: 'manifests'
+    env_file:
+      - ./.env.backend
+    # environment:
+    #   DATABASE_URI: 'postgresql://postgres:postgres@ciad-postgres:5432/ciad'
+    #   PORT: '1234'
+    #   ENVIROMENT: 'development'
+    #   MINIO_ENDPOINT: 'ciad-minio:9000'
+    #   MINIO_ACCESS_KEY: 'minioadmin'
+    #   MINIO_SECRET_KEY: 'minioadmin'
+    #   MINIO_USE_SSL: 'false'
+    #   MINIO_BUCKET_NAME: 'manifests'
     ports:
       - 1234:1234
     depends_on:
       - ciad-postgres
       - ciad-minio
-
+    networks:
+      - ciad-network
   #######################################
   ciad-postgres:
     image: postgres
@@ -43,10 +48,12 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: ciad
     ports:
-      - 5433:5432
+      - 5432:5432
     volumes:
       - ./data/db:/var/lib/postgresql/data
     restart: always
+    networks:
+      - ciad-network
   ##########################################
   pgadmin:
     image: dpage/pgadmin4
@@ -62,7 +69,8 @@ services:
       - '${PGADMIN_PORT:-5050}:80'
     depends_on:
       - ciad-postgres
-
+    networks:
+      - ciad-network
   ##########################################
   ciad-minio:
     container_name: ciad-minio
@@ -71,7 +79,7 @@ services:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
     volumes:
-      - minio_data:/data
+      - ./data/minio:/data
     ports:
       - '9002:9000' # API port
       - '9001:9001' # Console port
@@ -81,7 +89,8 @@ services:
       interval: 30s
       timeout: 20s
       retries: 3
-
+    networks:
+      - ciad-network
   ##########################################
   ciad-minio-init:
     container_name: ciad-minio-init
@@ -90,7 +99,10 @@ services:
       ciad-minio:
         condition: service_healthy
     volumes:
-      - ./data/minio:/data
       - ./init-minio.sh:/init-minio.sh
     entrypoint: ['/bin/sh', '/init-minio.sh']
     restart: on-failure
+
+networks:
+  ciad-network:
+    driver: bridge

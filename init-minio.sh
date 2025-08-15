@@ -1,6 +1,9 @@
 #!/bin/bash
 # Script to initialize MinIO bucket and policies
 
+# Install Curl
+apt-get update && apt-get install -y curl
+
 # Wait for MinIO to be ready
 echo "Waiting for MinIO to be ready..."
 until curl -s http://ciad-minio:9001/minio/health/live; do

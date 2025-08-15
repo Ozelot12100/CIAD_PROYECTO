@@ -3,7 +3,6 @@
 		"**/.vscode": true,
 		"**/.pnpm-*": true,
 		"**/node_modules": true,
-		"**/.git": true,
 		"**/dist": true,
 		"**/build": true,
 		"**/tmp": true,
@@ -14,7 +13,6 @@
 		"**/.vscode": true,
 		"**/.pnpm-*": true,
 		"**/node_modules": true,
-		"**/.git": true,
 		"**/dist": true,
 		"**/build": true,
 		"**/tmp": true
