@@ -8,20 +8,7 @@
 		"**/build": true,
 		"**/tmp": true,
 		"**/coverage": true,
-		"**/*.log": true,
-		"**/data/db": true,
-		"**/data/pgadmin": true
-	},
-	"files.exclude": {
-		"**/.vscode": false,
-		"**/.pnpm-*": true,
-		"**/node_modules": true,
-		"**/.git": true,
-		"**/dist": true,
-		"**/build": true,
-		"**/tmp": true,
-		"**/data/db": true,
-		"**/data/pgadmin": true
+		"**/*.log": true
 	},
 	"files.watcherExclude": {
 		"**/.vscode": true,
@@ -30,8 +17,7 @@
 		"**/.git": true,
 		"**/dist": true,
 		"**/build": true,
-		"**/tmp": true,
-		"**/data/db": true,
-		"**/data/pgadmin": true
-	}
+		"**/tmp": true
+	},
+	"explorer.autoReveal": true
 }
