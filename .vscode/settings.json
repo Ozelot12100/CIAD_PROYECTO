@@ -1,0 +1,23 @@
+{
+	"search.exclude": {
+		"**/.vscode": true,
+		"**/.pnpm-*": true,
+		"**/node_modules": true,
+		"**/.git": true,
+		"**/dist": true,
+		"**/build": true,
+		"**/tmp": true,
+		"**/coverage": true,
+		"**/*.log": true
+	},
+	"files.watcherExclude": {
+		"**/.vscode": true,
+		"**/.pnpm-*": true,
+		"**/node_modules": true,
+		"**/.git": true,
+		"**/dist": true,
+		"**/build": true,
+		"**/tmp": true
+	},
+	"explorer.autoReveal": true
+}
