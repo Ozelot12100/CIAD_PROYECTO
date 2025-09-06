@@ -8,7 +8,8 @@ services:
     environment:
       - PORT=4321
       - HOST=0.0.0.0
-      - API_URL=http://localhost:1234
+      - CLIENT_API_URL=http://localhost:1234
+      - SERVER_API_URL=http://ciad-backend:1234
     ports:
       - 4321:4321
     depends_on:
@@ -24,15 +25,6 @@ services:
       - ./ciad-backend:/app
     env_file:
       - ./.env.backend
-    # environment:
-    #   DATABASE_URI: 'postgresql://postgres:postgres@ciad-postgres:5432/ciad'
-    #   PORT: '1234'
-    #   ENVIROMENT: 'development'
-    #   MINIO_ENDPOINT: 'ciad-minio:9000'
-    #   MINIO_ACCESS_KEY: 'minioadmin'
-    #   MINIO_SECRET_KEY: 'minioadmin'
-    #   MINIO_USE_SSL: 'false'
-    #   MINIO_BUCKET_NAME: 'manifests'
     ports:
       - 1234:1234
     depends_on:
